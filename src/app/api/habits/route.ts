@@ -6,7 +6,7 @@ import { z } from "zod";
 // GET /api/habits - Get all habits for the current user
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +43,7 @@ const createHabitSchema = z.object({
 // POST /api/habits - Create a new habit
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -65,6 +65,9 @@ export async function POST(req: NextRequest) {
       data: {
         name: result.data.name,
         userId,
+      },
+      include: {
+        entries: true,
       },
     });
 
